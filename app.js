@@ -9,7 +9,7 @@ const PORT = 5000 || process.env.PORT;
 app.use(express.static('public'))
 
 app.use(expressLayout)
-app.set('layout','./layouts/main')
+app.set('layout','./layout/main')
 app.set('view engine','ejs')
 
 app.use('/', require('./server/routes/main'))
