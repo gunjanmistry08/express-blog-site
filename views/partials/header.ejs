@@ -2,11 +2,11 @@
     <a href="/" class="header__logo">NodeJS</a>
     <nav class="header__nav">
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a class="<%= isActiveRoute('/',currentRoute) %>" href="/">Home</a></li>
+            <li><a class="<%= isActiveRoute('/about',currentRoute) %>" href="/about">About</a></li>
+            <li><a class="<%= isActiveRoute('/contact',currentRoute) %>" href="/contact">Contact</a></li>
         </ul>
     </nav>
 
-    <div class="header__button"><button class="searchBtn">Search</button></div>
+    <div class="header__button" aria-expanded="false"><button class="searchBtn">Search</button></div>
 </header>
