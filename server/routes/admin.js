@@ -2,6 +2,8 @@ const express = require("express");
 const Post = require("../models/Post");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const bodyParser = require("body-parser")
+const {check, validationResult} = require("express-validator")
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
@@ -21,17 +23,35 @@ router.get("/admin", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login",[
+check("username","The username must be 3+ characters long").exists().notEmpty().trim().isLength({min: 3}).trim(),
+check("password", "Password is required").exists().notEmpty().trim()
+], async (req, res) => {
   try {
+    const local = {
+      title: "Admin",
+      description: "Simple Blog",
+    };
+
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      const alert = errors.array()
+      console.log(alert);
+      return res.status(422).render("admin/index", { local, alert, layout: adminLayout });
+      // res.render("admin/index", { local, alert, layout: adminLayout });
+    }
     const { username, password } = req.body;
 
     const user = await User.findOne({ username });
     if (!user) {
-      res.status(401).json({ message: "Invalid creds" });
+      var alert = [{path:"login",msg:"Username or Password Incorrect"}]
+      return res.status(401).render("admin/index", { local, alert, layout: adminLayout });
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      res.status(401).json({ message: "Invalid creds" });
+      var alert = [{path:"login",msg:"Username or Password Incorrect"}]
+      return res.status(401).render("admin/index", { local, alert, layout: adminLayout });
     }
 
     const token = jwt.sign({ userId: user._id }, jwtSecret);

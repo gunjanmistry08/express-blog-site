@@ -1,15 +1,28 @@
 <h3>Sign In</h3>
+<% const loginErr = alert?.find(a => a.path === "login") %>
+<% if (loginErr) { %>
+ <p><span>
+    <%= loginErr.msg %>
+ </span>
+ </p>
+<% } %>
 
 <form action="/login" method="post">
-    
     <label for="username"><b>Username</b></label>
     <input type="text" name="username" id="username" placeholder="Enter Username">
-    
-    <label for="password "><b>password </b></label>
-    <input type="password" name="password" id="password " placeholder="Enter password ">
+    <% const usernameErr = alert?.find(a => a.path === "username") %>
+    <% if (usernameErr) { %>
+        <p><span class="text-danger"><%= usernameErr.msg %></span></p>
+    <% } %>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" name="password" id="password" placeholder="Enter password">
+    <% const passwordErr = alert?.find(a => a.path === "password") %>
+    <% if (passwordErr) { %>
+        <p><span class="text-danger"><%= passwordErr.msg %></span></p>
+    <% } %>
 
     <input type="submit" value="Login" class="btn">
-
 </form>
 
 <!-- <h3>Register</h3>
