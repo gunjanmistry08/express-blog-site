@@ -7,8 +7,16 @@
 
   <label for="title"><b>Title</b></label>
   <input type="text" placeholder="Post Title" name="title">
+  <% const titleErr = alert?.find(a => a.path === "title") %>
+    <% if (titleErr) { %>
+        <p><span class="text-danger"><%= titleErr.msg %></span></p>
+    <% } %>
 
   <label for="body"><b>Content</b></label>
   <textarea name="body" cols="50" rows="10"></textarea>
+  <% const bodyErr = alert?.find(a => a.path === "body") %>
+    <% if (bodyErr) { %>
+        <p><span class="text-danger"><%= bodyErr.msg %></span></p>
+    <% } %>
 
   <input type="submit" value="Add" class="btn">

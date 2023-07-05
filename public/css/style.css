@@ -331,3 +331,7 @@ textarea {
   .pagination:hover {
     color: var(--black);
   }
+
+  .text-danger {
+    color:var(--red)
+  }

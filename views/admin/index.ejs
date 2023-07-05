@@ -1,7 +1,7 @@
 <h3>Sign In</h3>
 <% const loginErr = alert?.find(a => a.path === "login") %>
 <% if (loginErr) { %>
- <p><span>
+ <p><span class="text-danger">
     <%= loginErr.msg %>
  </span>
  </p>

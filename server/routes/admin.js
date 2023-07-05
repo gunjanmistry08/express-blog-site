@@ -17,7 +17,8 @@ router.get("/admin", async (req, res) => {
       title: "Admin",
       description: "Simple Blog",
     };
-    res.render("admin/index", { local, layout: adminLayout });
+    var alert = [{path:"",msg:""}]
+    res.render("admin/index", { local, layout: adminLayout, alert });
   } catch (e) {
     console.log(e);
   }
@@ -116,13 +117,28 @@ router.get("/add-post", authMiddleWare, async (req, res) => {
       title: "Add Post",
       description: "",
     };
-
-    res.render("admin/add-post", { local, layout: adminLayout });
+    var alert = [{path:"",msg:""}]
+    res.render("admin/add-post", { local, layout: adminLayout,alert});
   } catch (e) {}
 });
 
-router.post("/add-post", authMiddleWare, async (req, res) => {
+router.post("/add-post", authMiddleWare,[
+  check("title","The title must be 5 characters long").exists().notEmpty().trim().isLength({min: 5}),
+  check("body", "The body must be 10 characters long").exists().notEmpty().trim().isLength({min: 10})
+  ], async (req, res) => {
   try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      const alert = errors.array()
+      console.log(alert);
+      const local = {
+        title: "Add Post",
+        description: "",
+      };
+      return res.status(422).render("admin/add-post", { local, alert, layout: adminLayout });
+      // res.render("admin/index", { local, alert, layout: adminLayout });
+    }
     const newPost = new Post({ title: req.body.title, body: req.body.body });
     await Post.create(newPost);
     res.redirect("/dashboard");
@@ -140,10 +156,11 @@ router.get('/edit-post/:id', authMiddleWare, async (req, res) => {
       };
   
       const data = await Post.findOne({ _id: req.params.id });
-  
+      var alert =[{path:"",msg:""}]
       res.render('admin/edit-post', {
         locals,
         data,
+        alert,
         layout: adminLayout
       })
   
@@ -153,8 +170,25 @@ router.get('/edit-post/:id', authMiddleWare, async (req, res) => {
   
   });
 
-  router.put('/edit-post/:id', authMiddleWare, async (req, res) => {
+  router.put('/edit-post/:id', authMiddleWare,[
+    check("title","The title must be 5 characters long").exists().notEmpty().trim().isLength({min: 5}),
+    check("body", "The body must be 10 characters long").exists().notEmpty().trim().isLength({min: 10})
+    ], async (req, res) => {
     try {
+
+      const locals = {
+        title: "Edit Post",
+        description: "Free NodeJs User Management System",
+      };
+      var alert =[{path:"",msg:""}]
+      const errors = validationResult(req)
+
+      if (!errors.isEmpty()) {
+        alert = errors.array()
+        console.log(alert);
+      const data = new Post()
+        return res.status(422).render("admin/edit-post", { locals, data, alert, layout: adminLayout });
+      }
   
       await Post.findByIdAndUpdate(req.params.id, {
         title: req.body.title,
